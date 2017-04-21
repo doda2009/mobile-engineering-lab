@@ -1,0 +1,28 @@
+Erstelle ein Hello World App, dazu lege eines Leeren Ionic Projekt an.
+
+sudo ionic start HelloWorldApp blank --v2 --ts 
+	ps: ionic2017
+
+Um die Dateien zu bearbeiten führe folgenden Befehl aus, mit ls -l kannst du die Änderung von root auf ionic überprüfen.
+
+sudo chown -R ionic:ionic HelloWorldApp
+	ps: ionic2017
+
+Als nächstes geht es in den HelloWorldApp Ordner cd HelloWorldApp 
+
+Um zu schauen ob alles läuft wird nun der Test Server gestartet mittels
+
+ionic serve
+
+Tipp es bietet sich an Atom zu starten und das entsprechende Projekt zu laden. Nach dem das Projekt fertig Kompiliert ist, öffnet den Link im Browser und schat auch die App an.
+
+Als nächstes soll der Titel also “title” geändert werden in: 
+
+"Hello World"
+
+und im unterem Bereich ein beliebiger Text zum Beispiel: 
+
+"Die ist meine erste Ionic App."
+
+Nach dem speichern, brach es keinen Neustart des Test Servers. Die Veränderung kann begutachtet werden. Hiermit ist die Erste Aufgabe erledigt 
+
