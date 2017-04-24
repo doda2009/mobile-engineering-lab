@@ -2,48 +2,53 @@ Es kann nun ein neues oder das bereits Erstellte Projekt “HelloWorldApp” gen
 
 Als ersten soll ein Button gesetzt werden
 
+```
 <button ion-button (click)='buttonClick();'>CLICK</button>
+```
 
 Die Funktion für den Button wird in der entsprechenden TS Datei innerhalb der Klasse geschrieben.
 
+```
 buttonClick() { console.log('button click'); }
+```
 
 Die Ausgabe erfolgt in der Browser Console.
 
 Als nächstes wird ein Eingabe und Ausgabe Bereich erstellt.
 
 Für die Eingabe wird ein Number Input feld genutzt
-
+```
 <ion-item>
 	<ion-label>Eingabe</ion-label>
 	<ion-input type="number" [(ngModel)]="my_input"></ion-input>
 </ion-item>
-
-Für die Ausgabe ein nicht festgelegtes Input Feld 
-
+```
+Für die Ausgabe ein nicht festgelegtes Input Feld
+```
 <ion-item>
 	<ion-label>Ausagabe</ion-label>
 	<ion-input [(ngModel)]="my_output" readonly></ion-input>
 </ion-item>
-
+```
 Nun muss in der TypeScript Datei die Variablen und die Startwerte festgelegt werden.
 
-Variablen der Ein und Ausgabe mit fester Definition. 
-
+Variablen der Ein und Ausgabe mit fester Definition.
+```
 my_input:number = 1;
 my_output:string = '';
-
+```
 Für den Test wir nun die Funktion “buttonClick” genutzt um die Eingabe um eins zu addieren.
-
+```
 this.my_output = this.my_input + 1;
-
+```
 Achtung hier kommt es nun zu zwei Fehlern
 
-Der Erste Fehler tritt beim Kompilieren auf und muss behoben werden, da int in string nicht funktioniert
+Der Erste Fehler tritt beim Speichern auf und muss behoben werden, da int in string nicht funktioniert
 
-Der Zweite Fehler führt nicht zum absturz, sondern erzeugt eine falsche Ausgabe. string + number = strber.
+Der Zweite Fehler führt nicht zum Absturz, sondern erzeugt eine falsche Ausgabe. string + number = strber.
 
 Es sollen beide Fehler behoben werden
-number to string 
+```
+number to string
 string to number
-
+```

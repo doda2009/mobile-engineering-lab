@@ -1,0 +1,128 @@
+Als erstes wird ein neues Projekt angelegt das Tabs besitzt.
+
+```
+sudo ionic start todomanager tabs --v2 --ts
+```
+
+Nach dem das Projekt erstellt und die Rechte angepasst wurden, kann der Ionic-Server wieder gestartet werden.
+Nun ändern wir als erstes die Tabs.
+Dazu wird Contact und alle TabIcons entfernt.
+
+
+* Home zu Task Liste
+
+* About zu Add Task
+
+In der `.ts` Datei wird nun alles, was mit Contact verknüpft war, entfernt.
+Bislang waren die Tabs unten, nun sollen sie oben angezeigt werden.
+Dazu wird in der app.module.ts folgender Eintrag angepasst.
+```
+IonicModule.forRoot(MyApp, {tabsPlacement:'top'})
+```
+Außerdem soll die Headerleiste Fest sein.
+Dazu wird in der app.html folgede anpassung gemacht
+```
+<ion-header><ion-navbar>
+	<ion-title>TODOS</ion-title>
+</ion-navbar></ion-header>
+```
+Als nächstes kümmern wir uns um die Eingabe von Tasks.
+Dazu wird der _about_ Ordner genommen. Dieser kann gerne umbenannt werden. Wichtig: alle Verweise auf diesen Ordner müssen angepasst werden.
+Nach dem wir _About_ zu  _Task Hinzufügen_ umgeändert haben, soll ein Eingabe Feld und eine Auswahl eingebaut werden, deren Werte mit einem Button-Klick gespeichert werden.
+Der Auswahl wird mittels `ion-select` und `ion-option` realisiert und beinhaltet folgende Values:
+Other, Shopping, Study, Work, Reminder
+Um die Funktionalität zu erweitern habt ihr sicherlich schon aus Aufgabe 2 den Button und die entsprechende Variablen definiert.
+Für eine zusätzliche Ausgabe wird nun ein Toast genutzt.
+Um Toast zu nutzen braucht es den Import
+```
+	import { ToastController } from 'ionic-angular';
+```
+und den Konstruktor Zusatz.
+```
+	constructor(public navCtrl: NavController,public toastCtrl: ToastController){}
+```
+Um euch die zeit zu ersparen haben wir hier eine Funktion die ihr nutzten könnt um einen Toast zu senden
+```
+	sendToast(msg) {
+	  let toast = this.toastCtrl.create({message: msg,duration: 5000});
+	  toast.present();
+ 	}
+```
+Der Parameter `msg` ist dann die Ausgabe
+Wenn jetzt also der Titel leer ist dann soll eine entsprechende Meldung kommen wenn nicht dann "TODO added " + Titel
+Nun soll der Eintrag auch gespeichert werden, dazu wird Storage verwendet. http://ionicframework.com/docs/storage/
+Um Storage zu nutzen brach es wieder einen Import
+```
+	import { Storage } from '@ionic/storage';
+```
+und den entsprechenden Konstruktor Zusatz.
+```
+	ToastController, private storage: Storage)
+```
+Achtung es geht nur wenn die Storage Variable auf private gesetzt wird.
+Zusätzlich müssen in der app.module.ts zwei weitere Anpassungen gemacht werden.
+```
+	import { IonicStorageModule } from '@ionic/storage';
+```
+und bei "imports" den Eintrag.
+```
+	IonicStorageModule.forRoot()
+```
+Um die Todos richtig zu speichern wird das Array aus der Vorlesung verwendet:
+
+```
+todos: Array<{id: number, title: string, category: string}>=[];
+```
+
+Das Speichern der Todo's in der Datenbank soll beim Klick auf den Button erfolgen. Dazu wird in der entsprechenden click-function ein Push in das Array getätigt.
+Beim Hinzufügen zum Array wird eine interne Nummer hochgezählt und das Array als JSON in einem entsprechenden Key gespeichert.
+
+Wie das Speichern in der Datenbank implementiert wird, kann der Dokumentation von ionic im Kapitel _Storage_ entnommen werden. Wichtig dabei ist, den Promise für storage.ready() abzuwarten.
+
+Nun habe wir die Todos gespeichert, möchten sie aber auch anzeigen.
+Dazu wird der "home" Ordner genommen. Dieser kann gerne umbenannt werden. Wichtig alle Verweise auf den Ordner dann auch.
+Nach dem wir minimal aber "Home "zu  "Task List" umgeändert haben, soll eine Liste erzeugt werden die checkboxen enthält.
+```
+	<ion-list>
+		<ion-item *ngFor="let todo of todos">
+		  <ion-label> {{ todo.id }} {{ todo.title }} ({{todo.category}})</ion-label>
+		  <ion-checkbox (click)="delete(todo.id);"></ion-checkbox>
+		</ion-item>
+	  </ion-list>
+```
+Dann muss Storage und der Toast wie zuvor implementiert werden.
+Hier der restliche Code:
+```
+  ionViewWillEnter() {
+    this.refresh();
+  }
+
+  refresh() {
+    this.todos = [];
+    this.storage.get('todos').then((val) => {
+      var temp_todos: Array<{ id: number, title: string, category: string }> = [];
+      temp_todos = JSON.parse(val);
+      for (let i = 0; i < temp_todos.length; i++) {
+        var todo = temp_todos[i];
+        this.todos.push(todo);
+      }
+    });
+  }
+
+  delete(id) {
+    var temp_todos: Array<{ id: number, title: string, category: string }> = [];
+    for (let i = 0; i < this.todos.length; i++) {
+      var todo = this.todos[i];
+      if (todo.id !== id) {
+        temp_todos.push(todo);
+      }
+      else {
+        this.sendToast("TODO finish " + todo.title);
+      }
+    }
+    this.todos = temp_todos;
+    this.storage.ready().then(() => {
+      this.storage.set('todos', JSON.stringify(this.todos));
+    });
+  }
+```
